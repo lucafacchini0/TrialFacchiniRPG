@@ -82,6 +82,8 @@ public class Entity {
     }
 
     public void draw(Graphics2D g2d) {
+
+        // NOTE: Player's draw method is overridden in the Player class
         switch(currentDirection) {
             case UP -> g2d.drawImage(sprites.get("up")[0], worldX, worldY, null);
             case DOWN -> g2d.drawImage(sprites.get("down")[0], worldX, worldY, null);

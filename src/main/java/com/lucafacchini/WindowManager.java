@@ -30,6 +30,9 @@ public class WindowManager extends JPanel implements Runnable {
     // KeyHandler
     KeyHandler kh = new KeyHandler(this);
 
+    // Maps
+    public TileManager firstLayerMap = new TileManager(this, "/maps/background.csv");
+
     // Entities
     public Player player = new Player(this);
 
@@ -70,6 +73,7 @@ public class WindowManager extends JPanel implements Runnable {
     }
 
     private void drawComponents(Graphics2D g2d) {
+        firstLayerMap.draw(g2d);
         player.draw(g2d);
     }
 }
