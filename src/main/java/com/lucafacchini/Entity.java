@@ -57,9 +57,7 @@ public class Entity {
                 }
                 sprites.put(direction, walkSprites);
             }
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error loading walking sprites.", e);
-        }
+        } catch (IOException e) { LOGGER.log(Level.SEVERE, "Error loading walking sprites.", e); }
 
         SpriteDirection[] idleDirections = { SpriteDirection.IDLE_UP, SpriteDirection.IDLE_DOWN, SpriteDirection.IDLE_LEFT, SpriteDirection.IDLE_RIGHT };
 
@@ -71,10 +69,7 @@ public class Entity {
                 }
                 sprites.put(direction, idleSprites);
             }
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error loading idle sprites.", e);
-        }
-
+        } catch (IOException e) { LOGGER.log(Level.SEVERE, "Error loading idle sprites.", e); }
         resizeSprites();
     }
 
@@ -111,7 +106,6 @@ public class Entity {
     private void updateSprite() {
         spriteFrameCounter++;
 
-
         if(spriteFrameCounter >= SPRITE_FRAME_DELAY) {
             switch(spriteIndex) {
                 case 0 -> spriteIndex = 1;
@@ -119,8 +113,6 @@ public class Entity {
             }
             spriteFrameCounter = 0;
         }
-
-
     }
 
     public void draw(Graphics2D g2d, boolean isPlayer, int screenX, int screenY) {
@@ -132,7 +124,7 @@ public class Entity {
                 case DOWN -> currentSprite = sprites.get(SpriteDirection.WALK_DOWN)[spriteIndex];
                 case LEFT -> currentSprite = sprites.get(SpriteDirection.WALK_LEFT)[spriteIndex];
                 case RIGHT -> currentSprite = sprites.get(SpriteDirection.WALK_RIGHT)[spriteIndex];
-                default -> currentSprite = sprites.get(SpriteDirection.WALK_UP)[0];
+                default -> currentSprite = sprites.get(SpriteDirection.WALK_UP)[spriteIndex];
             }
         } else {
             switch(currentDirection) {

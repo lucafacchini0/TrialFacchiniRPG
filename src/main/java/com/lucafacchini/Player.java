@@ -20,6 +20,4 @@ public class Player extends Entity {
         screenY = wm.SCREEN_HEIGHT / 2 - wm.TILE_SIZE / 2;
         loadSprites("/sprites/player/", 2, 2);
     }
-
-
 }
