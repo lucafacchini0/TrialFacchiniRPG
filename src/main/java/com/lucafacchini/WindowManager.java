@@ -74,6 +74,6 @@ public class WindowManager extends JPanel implements Runnable {
 
     private void drawComponents(Graphics2D g2d) {
         firstLayerMap.draw(g2d);
-        player.draw(g2d);
+        player.draw(g2d, true, player.screenX, player.screenY);
     }
 }

@@ -12,6 +12,9 @@ import java.util.logging.Logger;
 
 public class TileManager {
 
+    // Debug & Logging
+    private static final Logger LOGGER = Logger.getLogger(TileManager.class.getName());
+
     // Coordinates
     public static int worldX, worldY;
     public static int screenX, screenY;
@@ -38,7 +41,9 @@ public class TileManager {
     public void loadMap(String filePath) {
         try {
             InputStream inputFile = getClass().getResourceAsStream(filePath);
-            assert inputFile != null;
+
+            if(inputFile == null) { LOGGER.log(Level.SEVERE, "Error loading map file."); return; }
+
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputFile));
 
             int currentWorldColumn = 0;
@@ -60,7 +65,7 @@ public class TileManager {
             }
             reader.close();
         } catch (Exception e) {
-            Logger.getLogger(TileManager.class.getName()).log(Level.SEVERE, null, e);
+            LOGGER.log(Level.SEVERE, null, e);
         }
         rescale();
     }
@@ -84,27 +89,24 @@ public class TileManager {
                 String imagePath = "/tiles/tile_" + id + ".png";
                 InputStream imageStream = getClass().getResourceAsStream(imagePath);
 
-                if (imageStream == null) {
-                } else {
-                    Tile tile = new Tile();
-                    tile.image = ImageIO.read(imageStream);
-                    if (tile.image != null) {
-                        tileMap.put(id, tile);
-                    } else {
-                    }
-                }
+                if (imageStream == null) { LOGGER.log(Level.WARNING, "Tile image not found at path: " + imagePath); return; }
+
+                Tile tile = new Tile();
+                tile.image = ImageIO.read(imageStream);
+
+                tileMap.put(id, tile);
 
             } catch (IOException e) {
-                Logger.getLogger(TileManager.class.getName()).log(Level.SEVERE, null, e);
+                LOGGER.log(Level.SEVERE, "Error reading the tile image file for tile ID " + id, e);
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Unexpected error while loading tile image for ID " + id, e);
+            }
         }
-    }
     }
 
     private void rescaleAllTileImages() {
         for (Tile tile : tileMap.values()) {
-            if (tile.image != null) {
-                tile.image = util.rescaleImage(tile.image, wm.TILE_SIZE, wm.TILE_SIZE);
-            }
+            tile.image = util.rescaleImage(tile.image, wm.TILE_SIZE, wm.TILE_SIZE);
         }
     }
 
@@ -149,10 +151,9 @@ public class TileManager {
                 currentWorldColumn = 0;
             }
 
-            // [ DEBUG ]
-            // [ WARNING ] - takes long time to draw (around 0.8 ms)
-            // g2d.setColor(Color.pink);
-            // g2d.drawRect(screenX, screenY, wm.TILE_SIZE, wm.TILE_SIZE);
+            // Debug
+            g2d.setColor(Color.pink);
+            g2d.drawRect(screenX, screenY, wm.TILE_SIZE, wm.TILE_SIZE);
         }
     }
 }
