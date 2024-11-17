@@ -2,7 +2,6 @@ package com.lucafacchini;
 
 import java.awt.*;
 import java.util.logging.Logger;
-import java.util.logging.Level;
 
 import javax.swing.JPanel;
 import java.util.concurrent.Executors;
@@ -32,7 +31,7 @@ public class WindowManager extends JPanel implements Runnable {
     KeyHandler kh = new KeyHandler(this);
 
     // Entities
-    public Player player = new Player(this, kh);
+    public Player player = new Player(this);
 
     public WindowManager() {
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
@@ -56,7 +55,7 @@ public class WindowManager extends JPanel implements Runnable {
 
     public void update() {
         if (!isPaused) {
-            player.update();
+            player.update(kh);
         }
     }
 
