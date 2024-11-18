@@ -40,6 +40,9 @@ public class TileManager {
 
         loadMap(path);
         rescaleAllTileImages();
+
+        // put tile 4 solid
+        tileMap.get(4).isSolid = true;
     }
 
     public void loadMap(String filePath) {

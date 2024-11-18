@@ -14,19 +14,16 @@ public class KeyHandler implements KeyListener {
     // Reference to the window manager
     WindowManager wm;
 
-    public KeyHandler(WindowManager wm) {
-        this.wm = wm;
-    }
+    public KeyHandler(WindowManager wm) { this.wm = wm; }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-        // Not used
-    }
+    public void keyTyped(KeyEvent e) {}
 
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
 
+        // Movement
         if(key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) { isLeftPressed = true; }
         if(key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) { isRightPressed = true; }
         if(key == KeyEvent.VK_UP || key == KeyEvent.VK_W) { isUpPressed = true; }
@@ -37,10 +34,14 @@ public class KeyHandler implements KeyListener {
     public void keyReleased(KeyEvent e) {
         int key = e.getKeyCode();
 
+        // Pause
         if(key == KeyEvent.VK_ESCAPE) { wm.isPaused = !wm.isPaused; }
+
+        // Movement
         if(key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) { isLeftPressed = false; }
         if(key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) { isRightPressed = false; }
         if(key == KeyEvent.VK_UP || key == KeyEvent.VK_W) { isUpPressed = false; }
         if(key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) { isDownPressed = false; }
+
     }
 }

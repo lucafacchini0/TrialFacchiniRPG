@@ -17,18 +17,19 @@ public class Entity {
     // Entity attributes
     public int speed = 0;
 
+    // Collision management
+    public Rectangle boundingBox = new Rectangle();
+    public boolean isColliding = false;
+
     // Sprite settings
-    protected enum SpriteDirection { WALK_UP, WALK_DOWN, WALK_LEFT, WALK_RIGHT, IDLE_UP, IDLE_DOWN, IDLE_LEFT, IDLE_RIGHT }
+    public enum SpriteDirection { WALK_UP, WALK_DOWN, WALK_LEFT, WALK_RIGHT, IDLE_UP, IDLE_DOWN, IDLE_LEFT, IDLE_RIGHT }
     public HashMap<SpriteDirection, BufferedImage[]> sprites = new HashMap<>();
-    private final int SPRITE_FRAME_DELAY = 10;
     private int spriteFrameCounter = 0;
     protected int spriteIndex = 1;
 
     // Direction settings
-
     protected enum Direction { UP, DOWN, LEFT, RIGHT }
     protected enum State { IDLE, WALKING }
-
     Direction currentDirection = Direction.DOWN;
     State currentState = State.IDLE;
 
@@ -39,10 +40,14 @@ public class Entity {
     WindowManager wm;
 
     // Utility
-    Utility util = new Utility();
+    static Utility util = new Utility();
+
+    // Collision manager
+    static CollisionManager cm;
 
     public Entity(WindowManager wm) {
         this.wm = wm;
+        cm = new CollisionManager(wm);
     }
 
     // Load sprites
@@ -70,29 +75,21 @@ public class Entity {
                 sprites.put(direction, idleSprites);
             }
         } catch (IOException e) { LOGGER.log(Level.SEVERE, "Error loading idle sprites.", e); }
-        resizeSprites();
     }
 
-    private void resizeSprites() {
+    public void resizeSprites(int width, int height) {
         for(SpriteDirection direction : sprites.keySet()) {
             for(int i = 0; i < sprites.get(direction).length; i++) {
-                sprites.get(direction)[i] = util.rescaleImage(sprites.get(direction)[i], wm.TILE_SIZE, wm.TILE_SIZE);
+                sprites.get(direction)[i] = util.rescaleImage(sprites.get(direction)[i], width, height);
             }
         }
     }
 
+    // kh is passed from the WindowManager class
     public void update(KeyHandler kh) {
         updateDirection(kh);
         updateSprite();
-
-        if(currentState == State.WALKING) {
-            switch(currentDirection) {
-                case UP -> worldY -= speed;
-                case DOWN -> worldY += speed;
-                case LEFT -> worldX -= speed;
-                case RIGHT -> worldX += speed;
-            }
-        }
+        updatePosition();
     }
 
     private void updateDirection(KeyHandler kh) {
@@ -106,6 +103,8 @@ public class Entity {
     private void updateSprite() {
         spriteFrameCounter++;
 
+        int SPRITE_FRAME_DELAY = 10;
+
         if(spriteFrameCounter >= SPRITE_FRAME_DELAY) {
             switch(spriteIndex) {
                 case 0 -> spriteIndex = 1;
@@ -115,28 +114,48 @@ public class Entity {
         }
     }
 
-    public void draw(Graphics2D g2d, boolean isPlayer, int screenX, int screenY) {
-        BufferedImage currentSprite;
-
+    private void updatePosition() {
         if(currentState == State.WALKING) {
-            switch(currentDirection) {
-                case UP -> currentSprite = sprites.get(SpriteDirection.WALK_UP)[spriteIndex];
-                case DOWN -> currentSprite = sprites.get(SpriteDirection.WALK_DOWN)[spriteIndex];
-                case LEFT -> currentSprite = sprites.get(SpriteDirection.WALK_LEFT)[spriteIndex];
-                case RIGHT -> currentSprite = sprites.get(SpriteDirection.WALK_RIGHT)[spriteIndex];
-                default -> currentSprite = sprites.get(SpriteDirection.WALK_UP)[spriteIndex];
-            }
-        } else {
-            switch(currentDirection) {
-                case UP -> currentSprite = sprites.get(SpriteDirection.IDLE_UP)[spriteIndex];
-                case DOWN -> currentSprite = sprites.get(SpriteDirection.IDLE_DOWN)[spriteIndex];
-                case LEFT -> currentSprite = sprites.get(SpriteDirection.IDLE_LEFT)[spriteIndex];
-                case RIGHT -> currentSprite = sprites.get(SpriteDirection.IDLE_RIGHT)[spriteIndex];
-                default -> currentSprite = sprites.get(SpriteDirection.IDLE_UP)[spriteIndex];
+            isColliding = false;
+
+            cm.checkTile(this);
+
+            if(!isColliding) {
+                switch(currentDirection) {
+                    case UP -> worldY -= speed;
+                    case DOWN -> worldY += speed;
+                    case LEFT -> worldX -= speed;
+                    case RIGHT -> worldX += speed;
+                }
             }
         }
+    }
 
-        if(!isPlayer) { g2d.drawImage(currentSprite, worldX, worldY, null); }
-        else { g2d.drawImage(currentSprite, screenX, screenY, null); }
+    public void draw(Graphics2D g2d, boolean isPlayer, int screenX, int screenY) {
+        SpriteDirection spriteType = switch (currentState) {
+            case WALKING -> switch (currentDirection) {
+                case UP -> SpriteDirection.WALK_UP;
+                case DOWN -> SpriteDirection.WALK_DOWN;
+                case LEFT -> SpriteDirection.WALK_LEFT;
+                case RIGHT -> SpriteDirection.WALK_RIGHT;
+            };
+            default -> switch (currentDirection) {
+                case UP -> SpriteDirection.IDLE_UP;
+                case DOWN -> SpriteDirection.IDLE_DOWN;
+                case LEFT -> SpriteDirection.IDLE_LEFT;
+                case RIGHT -> SpriteDirection.IDLE_RIGHT;
+            };
+        };
+
+        BufferedImage currentSprite = sprites.get(spriteType)[spriteIndex];
+
+        int drawX = isPlayer ? screenX : worldX;
+        int drawY = isPlayer ? screenY : worldY;
+        g2d.drawImage(currentSprite, drawX, drawY, null);
+
+        // Debug
+        // Debug
+        g2d.setColor(Color.RED);
+        g2d.drawRect(screenX + boundingBox.x, screenY + boundingBox.y, boundingBox.width, boundingBox.height);
     }
 }
