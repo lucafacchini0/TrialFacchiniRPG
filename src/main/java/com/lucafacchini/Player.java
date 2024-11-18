@@ -1,9 +1,6 @@
 package com.lucafacchini;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.util.logging.Logger;
-import java.util.logging.Level;
 
 public class Player extends Entity {
 
@@ -15,9 +12,15 @@ public class Player extends Entity {
 
     public Player(WindowManager wm) {
         super(wm);
-        speed = 10;
         screenX = wm.SCREEN_WIDTH / 2 - wm.TILE_SIZE / 2;
         screenY = wm.SCREEN_HEIGHT / 2 - wm.TILE_SIZE / 2;
         loadSprites("/sprites/player/", 2, 2);
+        setDefaultValues();
+    }
+
+    private void setDefaultValues() {
+        speed = 5;
+        worldX = wm.SCREEN_WIDTH / 2 - wm.TILE_SIZE / 2;
+        worldY = wm.SCREEN_HEIGHT / 2 - wm.TILE_SIZE / 2;
     }
 }

@@ -23,6 +23,10 @@ public class TileManager {
     public HashMap<Integer, Tile> tileMap;
     public final int[][] GAME_MAP;
 
+    // World Settings
+    public final int WORLD_COLUMNS = 50;
+    public final int WORLD_ROWS = 50;
+
     // Window manager reference
     WindowManager wm;
 
@@ -31,7 +35,7 @@ public class TileManager {
 
     public TileManager(WindowManager wm, String path) {
         this.wm = wm;
-        GAME_MAP = new int[wm.MAX_COLUMNS][wm.MAX_ROWS];
+        GAME_MAP = new int[WORLD_ROWS][WORLD_COLUMNS];
         tileMap = new HashMap<>();
 
         loadMap(path);
@@ -49,13 +53,13 @@ public class TileManager {
             int currentWorldColumn = 0;
             int currentWorldRow = 0;
 
-            while (currentWorldRow < wm.MAX_ROWS) {
+            while (currentWorldRow < WORLD_ROWS) {
                 String line = reader.readLine();
                 if (line == null) break; // Stop if no more lines
 
                 String[] numbers = line.split(",");
 
-                while (currentWorldColumn < wm.MAX_COLUMNS && currentWorldColumn < numbers.length) {
+                while (currentWorldColumn < WORLD_COLUMNS && currentWorldColumn < numbers.length) {
                     int number = Integer.parseInt(numbers[currentWorldColumn]);
                     GAME_MAP[currentWorldColumn][currentWorldRow] = number;
                     currentWorldColumn++;
@@ -72,8 +76,8 @@ public class TileManager {
 
     // Method to load all tile images
     private void rescale() {
-        for (int row = 0; row < wm.MAX_ROWS; row++) {
-            for (int col = 0; col < wm.MAX_COLUMNS; col++) {
+        for (int row = 0; row < WORLD_ROWS; row++) {
+            for (int col = 0; col < WORLD_COLUMNS; col++) {
                 int tileID = GAME_MAP[col][row];
                 if (tileID != -1) {
                     loadTileImage(tileID);
@@ -114,13 +118,13 @@ public class TileManager {
         int currentWorldColumn = 0;
         int currentWorldRow = 0;
 
-        while (currentWorldColumn < wm.MAX_COLUMNS && currentWorldRow < wm.MAX_ROWS) {
+        while (currentWorldColumn < WORLD_COLUMNS && currentWorldRow < WORLD_ROWS) {
             int currentTileIndex = GAME_MAP[currentWorldColumn][currentWorldRow];
 
             // Skip if the index is -1
             if (currentTileIndex == -1) {
                 currentWorldColumn++;
-                if (currentWorldColumn == wm.MAX_COLUMNS) {
+                if (currentWorldColumn == WORLD_COLUMNS) {
                     currentWorldRow++;
                     currentWorldColumn = 0;
                 }
@@ -146,7 +150,7 @@ public class TileManager {
 
             currentWorldColumn++;
 
-            if (currentWorldColumn == wm.MAX_COLUMNS) {
+            if (currentWorldColumn == WORLD_COLUMNS) {
                 currentWorldRow++;
                 currentWorldColumn = 0;
             }
