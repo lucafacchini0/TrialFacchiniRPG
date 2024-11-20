@@ -26,7 +26,7 @@ public class Player extends Entity {
     }
 
     private void setDefaultValues() {
-        speed = 1;
+        speed = 12;
         worldX = wm.TILE_SIZE * 25 - wm.TILE_SIZE; // Spawn at the center of the map
         worldY = wm.TILE_SIZE * 25 - wm.TILE_SIZE; // Spawn at the center of the map
         boundingBox.x = 0;

@@ -8,9 +8,9 @@ public class CollisionManager {
 
     public void checkTile(Entity entity) {
         int entityLeftWorldX = entity.worldX + entity.boundingBox.x;
-        int entityRightWorldX = entityLeftWorldX + entity.boundingBox.width; // Cambiato per maggiore chiarezza
+        int entityRightWorldX = entityLeftWorldX + entity.boundingBox.width;
         int entityTopWorldY = entity.worldY + entity.boundingBox.y;
-        int entityBottomWorldY = entityTopWorldY + entity.boundingBox.height; // Cambiato per maggiore chiarezza
+        int entityBottomWorldY = entityTopWorldY + entity.boundingBox.height;
 
 
         int entityLeftColumn = entityLeftWorldX / wm.TILE_SIZE;

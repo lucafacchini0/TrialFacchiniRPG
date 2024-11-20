@@ -43,7 +43,32 @@ public class TileManager {
 
         // put tile 4 solid
         tileMap.get(4).isSolid = true;
+
+        // Debug
+        for (int row = 0; row < WORLD_ROWS; row++) {
+            for (int col = 0; col < WORLD_COLUMNS; col++) {
+                System.out.print(GAME_MAP[col][row] + " ");
+            }
+            System.out.println();
+        }
+
     }
+
+    // check if solid
+    public boolean isSolid(int x, int y) {
+        int col = x / wm.TILE_SIZE;
+        int row = y / wm.TILE_SIZE;
+
+        // Ensure indices are within bounds
+        if (col < 0 || col >= WORLD_COLUMNS || row < 0 || row >= WORLD_ROWS) {
+            return false; // Out of bounds means no collision
+        }
+
+        Tile tile = tileMap.get(GAME_MAP[col][row]);
+        return tile != null && tile.isSolid;
+    }
+
+
 
     public void loadMap(String filePath) {
         try {
